@@ -20,4 +20,12 @@ interface QueueInterface
      * @return string
      */
     public function getName();
+
+    /**
+     * Shift an element from the top of the
+     * Queue.
+     *
+     * @return JobInterface
+     */
+    public function pull();
 }

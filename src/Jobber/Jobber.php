@@ -5,7 +5,6 @@ namespace Jobber;
 use Jobber\Adapter\AdapterInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Jobber\Model\JobInterface;
-use Jobber\JobData\JobDataInterface;
 use Jobber\Event\JobberEvent;
 use Jobber\JobberEvents;
 
@@ -20,16 +19,26 @@ class Jobber
         $this->adapter = $adapter;
     }
 
-    public function enqueue($queue, JobInterface $job, JobDataInterface $data)
+    public function enqueue($queueName, JobInterface $job)
     {
-        $event = new JobberEvent($job, $data);
+        $event = new JobberEvent($job);
         $this->dispatcher->dispatch(JobberEvents::BEFORE_ENQUEUE, $event);
 
-        // Do something
-        $this->adapter->getQueue($queue)->addJob($job);
-x
-        $event = new JobberEvent($job, $data);
+        if (null === ($queue = $this->adapter->getQueue($queueName))) {
+            $queue = $this->adapter->createQueue($queueName);
+        }
+        $queue->addJob($job);
+
         $this->dispatcher->dispatch(JobberEvents::AFTER_ENQUEUE, $event);
     }
 
+    public function dequeue($queueName, JobInterface $job)
+    {
+        $event = new JobberEvent($job);
+        $this->dispatcher->dispatch(JobberEvents::BEFORE_ENQUEUE, $event);
+
+        // TODO
+
+        $this->dispatcher->dispatch(JobberEvents::AFTER_ENQUEUE, $event);
+    }
 }

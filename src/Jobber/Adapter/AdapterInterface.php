@@ -4,6 +4,12 @@ namespace Jobber\Adapter;
 
 interface AdapterInterface
 {
+
+    /**
+     * Returns all available queues
+     *
+     * @return \Jobber\Model\QueueInterface[]
+     */
     public function getQueues();
 
     /**

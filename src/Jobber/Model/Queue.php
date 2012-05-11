@@ -2,7 +2,7 @@
 
 namespace Jobber\Model;
 
-class Queue extends \SplPriorityQueue implements QueueInterface
+abstract class Queue extends \SplPriorityQueue implements QueueInterface
 {
     /* @var string */
     protected $name;
@@ -36,14 +36,12 @@ class Queue extends \SplPriorityQueue implements QueueInterface
 
     public function addJob(JobInterface $job)
     {
+        $job->setQueue($this);
         $this->insert($job, $job->getPriority());
 
         return $this;
     }
 
-    /**
-     * @param JobInterface[] $jobs
-     */
     public function setJobs($jobs)
     {
         foreach($jobs as $job) {
@@ -53,11 +51,13 @@ class Queue extends \SplPriorityQueue implements QueueInterface
         $this->jobs= $jobs;
     }
 
-    /**
-     * @return array|JobInterface[]
-     */
     public function getJobs()
     {
         return $this->jobs;
+    }
+
+    public function pull()
+    {
+        return $this->extract();
     }
 }
